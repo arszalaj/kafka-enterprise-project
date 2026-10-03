@@ -1,0 +1,1 @@
+package com.example.kafka.model; public record KafkaMessage(String id,String content){}

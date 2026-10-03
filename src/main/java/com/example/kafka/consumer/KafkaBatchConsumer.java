@@ -1,0 +1,1 @@
+package com.example.kafka.consumer; import java.util.*; import org.springframework.kafka.annotation.KafkaListener; import org.springframework.stereotype.Component; @Component public class KafkaBatchConsumer{ @KafkaListener(topics="${app.kafka.topic}") public void consume(List<String> msgs){ System.out.println(msgs.size()); }}

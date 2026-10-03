@@ -1,0 +1,8 @@
+app:
+  kafka:
+    topic: messages-topic
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
