@@ -1,0 +1,14 @@
+Kafka:
+  localhost:9092
+
+PostgreSQL:
+  localhost:5432
+
+Database:
+  messagesdb
+
+User:
+  postgres
+
+Password:
+  postgres

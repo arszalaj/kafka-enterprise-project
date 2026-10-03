@@ -1,8 +1,147 @@
-app:
+server:
+  port: 8080
+
+spring:
+
+  application:
+    name: kafka-batch-processor
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/messagesdb
+    username: postgres
+    password: postgres
+
+  jpa:
+    open-in-view: false
+
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        format_sql: true
+
+    show-sql: false
+
   kafka:
+
+    bootstrap-servers: localhost:9092
+
+    listener:
+      type: batch
+      ack-mode: batch
+      concurrency: 3
+
+    consumer:
+
+      group-id: batch-group
+
+      auto-offset-reset: earliest
+
+      enable-auto-commit: false
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      properties:
+
+        spring:
+          json:
+            trusted:
+              packages: com.example.kafka.model
+
+            value:
+              default:
+                type: com.example.kafka.model.KafkaMessage
+
+        max:
+          poll:
+            records: 100
+
+        fetch:
+          min:
+            bytes: 1
+
+        session:
+          timeout:
+            ms: 30000
+
+    producer:
+
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+      acks: all
+
+      retries: 3
+
+      properties:
+
+        enable:
+          idempotence: true
+
+    admin:
+      auto-create: true
+
+app:
+
+  kafka:
+
     topic: messages-topic
+
+    dlq-topic: messages-topic-dlt
+
+    group-id: batch-group
+
+    batch-size: 100
+
+  security:
+
+    username: admin
+
+    password: admin123
+
 management:
+
+  endpoints:
+
+    web:
+
+      exposure:
+
+        include:
+          - health
+          - info
+          - metrics
+          - prometheus
+
   endpoint:
+
     health:
+
+      show-details: always
+
       probes:
         enabled: true
+
+  health:
+
+    readiness-state:
+      enabled: true
+
+    liveness-state:
+      enabled: true
+
+logging:
+
+  level:
+
+    root: INFO
+
+    com.example.kafka: DEBUG
+
+    org.springframework.kafka: INFO
+
+    org.apache.kafka: WARN
